@@ -3,9 +3,9 @@ package org.mrpaulwoods.filtering;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mrpaulwoods.filtering.search.SmartColumn;
+import org.mrpaulwoods.filtering.search.SearchColumn;
 import org.mrpaulwoods.filtering.search.SearchService;
-import org.mrpaulwoods.filtering.search.SmartResult;
+import org.mrpaulwoods.filtering.search.SearchResult;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,14 +26,14 @@ public class ContactController {
     private final SearchService searchService;
 
     @GetMapping
-    ResponseEntity<SmartResult<Contact>> page(@RequestParam(name="filter", required=false) List<String> filters, Pageable pageable) {
+    ResponseEntity<SearchResult<Contact>> page(@RequestParam(name="filter", required=false) List<String> filters, Pageable pageable) {
 
-        List<SmartColumn> columns = new ArrayList<>();
-        columns.add(new SmartColumn("id", "ID", false));
-        columns.add(new SmartColumn("firstName", "First Name", true));
-        columns.add(new SmartColumn("lastName", "Last Name", true));
+        List<SearchColumn> columns = new ArrayList<>();
+        columns.add(new SearchColumn("id", "ID", false));
+        columns.add(new SearchColumn("firstName", "First Name", true));
+        columns.add(new SearchColumn("lastName", "Last Name", true));
 
-        SmartResult<Contact> result = searchService.createSpecification(contactRepository, columns, pageable, filters);
+        SearchResult<Contact> result = searchService.search(contactRepository, columns, pageable, filters);
 
         return ResponseEntity.ok(result);
     }
